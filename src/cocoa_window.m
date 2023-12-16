@@ -1242,7 +1242,7 @@ void _glfwFocusWindowCocoa(_GLFWwindow* window)
 
 void _glfwDragWindowCocoa(_GLFWwindow* window)
 {
-    // TODO
+    [window->ns.object performWindowDragWithEvent:[NSApp currentEvent]];
 }
 
 void _glfwSetWindowMonitorCocoa(_GLFWwindow* window,
