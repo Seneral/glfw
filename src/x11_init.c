@@ -1224,6 +1224,7 @@ GLFWbool _glfwConnectX11(int platformID, _GLFWplatform* platform)
         .requestWindowAttention = _glfwRequestWindowAttentionX11,
         .focusWindow = _glfwFocusWindowX11,
         .dragWindow = _glfwDragWindowX11,
+        .resizeWindow = _glfwResizeWindowX11,
         .setWindowMonitor = _glfwSetWindowMonitorX11,
         .windowFocused = _glfwWindowFocusedX11,
         .windowIconified = _glfwWindowIconifiedX11,

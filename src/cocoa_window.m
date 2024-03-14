@@ -1245,6 +1245,11 @@ void _glfwDragWindowCocoa(_GLFWwindow* window)
     [window->ns.object performWindowDragWithEvent:[NSApp currentEvent]];
 }
 
+void _glfwResizeWindowCocoa(_GLFWwindow* window, int border)
+{
+    // TODO
+}
+
 void _glfwSetWindowMonitorCocoa(_GLFWwindow* window,
                                 _GLFWmonitor* monitor,
                                 int xpos, int ypos,
