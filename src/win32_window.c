@@ -35,6 +35,7 @@
 #include <assert.h>
 #include <windowsx.h>
 #include <shellapi.h>
+#include <assert.h>
 
 // Returns the window style for the specified window
 //
@@ -49,14 +50,12 @@ static DWORD getWindowStyle(const _GLFWwindow* window)
         style |= WS_SYSMENU | WS_MINIMIZEBOX;
 
         if (window->decorated)
-        {
             style |= WS_CAPTION;
-
-            if (window->resizable)
-                style |= WS_MAXIMIZEBOX | WS_THICKFRAME;
-        }
         else
             style |= WS_POPUP;
+
+        if (window->resizable)
+            style |= WS_MAXIMIZEBOX | WS_THICKFRAME;
     }
 
     return style;
@@ -1842,7 +1841,49 @@ void _glfwDragWindowWin32(_GLFWwindow* window)
 {
     ReleaseCapture();
     SendMessage(window->win32.handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+
+    // Mouse button will be released after drag, so prepare released state here already
     _glfwInputMouseClick(window, GLFW_MOUSE_BUTTON_LEFT, GLFW_RELEASE, getKeyMods());
+}
+
+void _glfwResizeWindowWin32(_GLFWwindow* window, int border)
+{
+    WPARAM wBorder;
+    switch (border)
+    {
+        case GLFW_WINDOW_LEFT:
+            wBorder = HTLEFT;
+            break;
+        case GLFW_WINDOW_TOP:
+            wBorder = HTTOP;
+            break;
+        case GLFW_WINDOW_RIGHT:
+            wBorder = HTRIGHT;
+            break;
+        case GLFW_WINDOW_BOTTOM:
+            wBorder = HTBOTTOM;
+            break;
+        case GLFW_WINDOW_TOPLEFT:
+            wBorder = HTTOPLEFT;
+            break;
+        case GLFW_WINDOW_TOPRIGHT:
+            wBorder = HTTOPRIGHT;
+            break;
+        case GLFW_WINDOW_BOTTOMLEFT:
+            wBorder = HTBOTTOMLEFT;
+            break;
+        case GLFW_WINDOW_BOTTOMRIGHT:
+            wBorder = HTBOTTOMRIGHT;
+			break;
+		default:
+            assert(GLFW_FALSE);
+            return;
+    }
+    ReleaseCapture();
+    SendMessage(window->win32.handle, WM_NCLBUTTONDOWN, wBorder, 0);
+
+    // Mouse button will be released after drag, so prepare released state here already
+    _glfwInputMouseClick(window, GLFW_MOUSE_BUTTON_1, GLFW_RELEASE, 0);
 }
 
 void _glfwSetWindowMonitorWin32(_GLFWwindow* window,

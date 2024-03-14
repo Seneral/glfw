@@ -656,6 +656,21 @@ extern "C" {
 #define GLFW_GAMEPAD_AXIS_LAST          GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER
 /*! @} */
 
+/*! @defgroup window_sides Window sides and corners
+ *  @brief Sides and Corners of a Window.
+ *  @{ */
+#define GLFW_WINDOW_LEFT 1
+#define GLFW_WINDOW_TOP 2
+#define GLFW_WINDOW_RIGHT 4
+#define GLFW_WINDOW_BOTTOM 8
+#define GLFW_WINDOW_TOPLEFT (GLFW_WINDOW_TOP|GLFW_WINDOW_LEFT)
+#define GLFW_WINDOW_TOPRIGHT (GLFW_WINDOW_TOP|GLFW_WINDOW_RIGHT)
+#define GLFW_WINDOW_BOTTOMLEFT (GLFW_WINDOW_BOTTOM|GLFW_WINDOW_LEFT)
+#define GLFW_WINDOW_BOTTOMRIGHT (GLFW_WINDOW_BOTTOM|GLFW_WINDOW_RIGHT)
+#define GLFW_WINDOW_ALL_SIDES (GLFW_WINDOW_LEFT|GLFW_WINDOW_TOP|GLFW_WINDOW_RIGHT|GLFW_WINDOW_BOTTOM)
+/*! @} */
+
+
 /*! @defgroup errors Error codes
  *  @brief Error codes.
  *
@@ -3985,6 +4000,39 @@ GLFWAPI void glfwFocusWindow(GLFWwindow* window);
  *  @ingroup window
  */
 GLFWAPI void glfwDragWindow(GLFWwindow* handle);
+
+/*! @brief Starts a resize operation with the specified window.
+ *
+ *  This function starts a resize operation on one of the borders of the
+ *  specified window.
+ *
+ *  this function must be called from a pointer or touch event callback,
+ *  otherwise it risks reacting to a different event.
+ *
+ *  The borders are [GLFW_WINDOW_LEFT](@ref GLFW_GLFW_WINDOW_LEFT),
+ *  [GLFW_WINDOW_TOP](@ref GLFW_WINDOW_TOP),
+ *  [GLFW_WINDOW_RIGHT](@ref GLFW_WINDOW_RIGHT),
+ *  [GLFW_WINDOW_BOTTOM](@ref GLFW_WINDOW_BOTTOM),
+ *  [GLFW_WINDOW_TOPLEFT](@ref GLFW_WINDOW_TOPLEFT),
+ *  [GLFW_WINDOW_TOPRIGHT](@ref GLFW_WINDOW_TOPRIGHT),
+ *  [GLFW_WINDOW_BOTTOMLEFT](@ref GLFW_WINDOW_BOTTOMLEFT) and
+ *  [GLFW_WINDOW_BOTTOMRIGHT](@ref GLFW_WINDOW_BOTTOMRIGHT).
+ *
+ *  @param[in] window The window to start the resize operation.
+ *  @param[in] border One of the window borders.
+ *
+ *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED and @ref
+ *  GLFW_PLATFORM_ERROR.
+ *
+ *  @thread_safety This function must only be called from the main thread.
+ *
+ *  @sa @ref window_resize
+ *
+ *  @since Added in version 3.4.
+ *
+ *  @ingroup window
+ */
+GLFWAPI void glfwResizeWindow(GLFWwindow* window, int border);
 
 /*! @brief Requests user attention to the specified window.
  *

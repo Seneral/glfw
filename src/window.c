@@ -887,6 +887,19 @@ GLFWAPI void glfwDragWindow(GLFWwindow* handle)
     _glfw.platform.dragWindow(window);
 }
 
+GLFWAPI void glfwResizeWindow(GLFWwindow* handle, int border)
+{
+	_GLFWwindow* window = (_GLFWwindow*)handle;
+	assert(window != NULL);
+
+	_GLFW_REQUIRE_INIT();
+
+	if ((border&GLFW_WINDOW_ALL_SIDES) == 0 || (border&~GLFW_WINDOW_ALL_SIDES) != 0)
+		return;
+
+    _glfw.platform.resizeWindow(window, border);
+}
+
 GLFWAPI int glfwGetWindowAttrib(GLFWwindow* handle, int attrib)
 {
     _GLFW_REQUIRE_INIT_OR_RETURN(0);
