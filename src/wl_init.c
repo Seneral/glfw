@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/eventfd.h>
 #include <sys/mman.h>
 #include <sys/timerfd.h>
 #include <unistd.h>
@@ -576,6 +577,7 @@ int _glfwInitWayland(void)
     // These must be set before any failure checks
     _glfw.wl.keyRepeatTimerfd = -1;
     _glfw.wl.cursorTimerfd = -1;
+    _glfw.wl.eventfd = eventfd(0, 0);
 
     _glfw.wl.tag = glfwGetVersionString();
 
@@ -1006,6 +1008,8 @@ void _glfwTerminateWayland(void)
         close(_glfw.wl.keyRepeatTimerfd);
     if (_glfw.wl.cursorTimerfd >= 0)
         close(_glfw.wl.cursorTimerfd);
+    if (_glfw.wl.eventfd >= 0)
+        close(_glfw.wl.eventfd);
 
     _glfw_free(_glfw.wl.clipboardString);
 }
