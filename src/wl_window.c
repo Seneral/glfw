@@ -1210,12 +1210,13 @@ static void handleEvents(double* timeout)
 #endif
 
     GLFWbool event = GLFW_FALSE;
-    enum { DISPLAY_FD, KEYREPEAT_FD, CURSOR_FD, LIBDECOR_FD };
+    enum { DISPLAY_FD, KEYREPEAT_FD, CURSOR_FD, EVENT_FD, LIBDECOR_FD };
     struct pollfd fds[] =
     {
         [DISPLAY_FD] = { wl_display_get_fd(_glfw.wl.display), POLLIN },
         [KEYREPEAT_FD] = { _glfw.wl.keyRepeatTimerfd, POLLIN },
         [CURSOR_FD] = { _glfw.wl.cursorTimerfd, POLLIN },
+        [EVENT_FD] = { _glfw.wl.eventfd, POLLIN },
         [LIBDECOR_FD] = { -1, POLLIN }
     };
 
@@ -1287,6 +1288,14 @@ static void handleEvents(double* timeout)
 
             if (read(_glfw.wl.cursorTimerfd, &repeats, sizeof(repeats)) == 8)
                 incrementCursorImage(_glfw.wl.pointerFocus);
+        }
+
+        if (fds[EVENT_FD].revents & POLLIN)
+        {
+            uint64_t wake;
+
+            read(_glfw.wl.eventfd, &wake, sizeof(wake));
+            event = GLFW_TRUE;
         }
 
         if (fds[LIBDECOR_FD].revents & POLLIN)
@@ -2717,8 +2726,8 @@ void _glfwWaitEventsTimeoutWayland(double timeout)
 
 void _glfwPostEmptyEventWayland(void)
 {
-    wl_display_sync(_glfw.wl.display);
-    flushDisplay();
+    uint64_t wake = 1;
+    write(_glfw.wl.eventfd, &wake, sizeof(wake));
 }
 
 void _glfwGetCursorPosWayland(_GLFWwindow* window, double* xpos, double* ypos)
